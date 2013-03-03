@@ -2,7 +2,7 @@ package com.pyracube.sixdots.model;
 
 public class Dot {
 	public long ID;
-	public string FirstName;
-	public string LastName;
-	public 
+	public String FirstName;
+	public String LastName;
+	
 }
