@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<launchConfiguration type="org.tizen.web.zimlaunch.WebAppLaunch">
+<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
+<listEntry value="/alarm"/>
+</listAttribute>
+<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
+<listEntry value="4"/>
+</listAttribute>
+<stringAttribute key="org.tizen.web.zimlaunch.PROJECT_NAME" value="alarm"/>
+<booleanAttribute key="org.tizen.web.zimlaunch.UPDATE_MODE" value="false"/>
+</launchConfiguration>

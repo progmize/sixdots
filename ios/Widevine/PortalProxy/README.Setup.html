@@ -1,0 +1,22 @@
+<html>
+<title>Setting up a Cypher Portal Proxy Server</title>
+<body>
+<strong><U>Required RPMs</U></strong>
+<ul>
+<li>httpd</li>
+<li>perl</li>
+<li>perl-Compress-Zlib</li>
+<li>perl-HTML-Tagset</li>
+<li>perl-HTML-Parser</li>
+<li>perl-libwww-perl</li>
+<li>CypherDemo</li>
+</ul>
+<br/>
+<strong><U>Installation</U></strong>
+<ol>
+<li>Copy /var/www/html/PortalProxy/widevine.conf into /etc/httpd/conf.d/.</li>
+<li>Restart httpd ( /etc/init.d/httpd restart )</li>
+<li>Copy /var/www/html/PortalProxy/GetEMMs.cgi into /usr/local/widevine/cypherpc/cgi-bin/.  ( If the destination dir does not exist, use 'mkdir -p' to create it. )</li>
+</ol>
+</body>
+</html>

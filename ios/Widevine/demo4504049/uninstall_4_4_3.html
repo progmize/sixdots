@@ -1,0 +1,83 @@
+<HTML>
+<script>
+	function doDetect( type, value  ) {
+        	return eval( 'navigator.' + type + '.toLowerCase().indexOf("' + value + '") != -1' );
+    	}
+
+    	function detectIE()      { return doDetect( "userAgent", "msie" ); }
+	function CabCheck(){
+		var ver_str;
+                try{
+                        var wv_plugin = new ActiveXObject("npwidevinemediatransformer.WidevineMediaTransformerPlugin");
+                        if (wv_plugin){
+                                ver_str = wv_plugin.GetVersion();
+                                var ver_parts = ver_str.split(".");
+                                if(parseInt(ver_parts[0]) == 4
+                                && parseInt(ver_parts[1]) == 4
+                                && parseInt(ver_parts[2]) == 3){
+                                        return "";
+                                }
+                        }
+                        delete wv_plugin;
+                        wv_plugin = null;
+			return ver_str;
+                }catch(e){
+                        return "Plugin Not Installed";
+                }
+                return "Plugin Not Installed";
+        }
+</script>
+<BODY style="background-color: black; font-family: sans-serif">
+	<CENTER>
+
+	<script>
+		var cab_install = CabCheck();
+		if (cab_install == ""){
+			document.write('<H2 style="color: white">4.4.3 Uninstall Instructions</H2>');
+		}
+		document.write('<DIV style="background-image: url(install_image.png); margin-top: 50px; width: 800px; height: 600px">');
+		document.write('<TABLE>');
+
+		if(cab_install == "" && navigator.appVersion.indexOf("MSIE 7.0") != -1 && doDetect( "userAgent", "windows nt 6" )){	
+			document.write('<TR><TD style="padding-top: 40px"> A old version has been detected.  Please follow the instructions below to uninstall.</TD></TR>');
+                        document.write('<TR><TD><OL>');
+			document.write('<LI>Goto the Tools Menu</LI>');
+			document.write("<LI>Select 'Manage Add-ons'</LI>");	
+			document.write("<LI>Select 'Enable or Disable Add-ons'</LI>");
+			document.write("<LI>Select 'Add-ons that have been used by Internet Explorer' from the Show drop down</LI>");
+			document.write('<LI>Select WidevineMediaTransformerPlugin from the List</LI>');
+			document.write('<LI>Click the Delete button</LI>');
+			document.write("<LI>Click OK to close the 'Manage Add-ons Manager'</LI></OL>");
+			document.write("<H4>Restart Internet Explorer and go to a page that does not load the plugin and perform the above steps.</H4>");
+			document.write('</TD></TR>');
+		//}else if(navigator.appVersion.indexOf("MSIE 8.0") != -1 && doDetect( "userAgent", "windows nt 6" )){
+               //         document.write('<TR><TD style="padding-top: 40px"> A old version has been detected.  Please follow the instructions below to uninstall.</TD></TR>');
+               //         document.write('<TR><TD><OL>');
+              //          document.write('<LI>Goto the Tools Menu</LI>');
+              //          document.write("<LI>Select 'Manage Add-ons'</LI>");
+              //         document.write("<LI>Select 'All add-ons'</LI>");
+              //          document.write('<LI>Select WidevineMediaTransformerPlugin from the List</LI>');
+              //          document.write('<LI>Click the More Information link</LI>');
+              //          document.write("<LI>Once the Plugin dialog appears click the Remove button</LI></OL>");
+              //          document.write('</TD></TR>');
+
+		}else if(cab_install == ""){
+			document.write('<TR><TD style="padding-top: 40px"> A old version has been detected.  Please follow the instructions below to uninstall.</TD></TR>');
+			document.write('<TR><TD><OL>');
+			document.write('<LI><a href="installer/Widevine_4_4_3_Uninstaller.exe">Click Here</a> to download the uninstaller.</LI>');
+			document.write('<LI>Shutdown Internet Explorer</LI>');
+			document.write('<LI>Run the uninstaller</LI>');
+			document.write('<LI>Relaunch Internet Explorer and go back to the page</LI></OL></TD></TR>');
+		}else if (cab_install.indexOf(".") != -1){
+			document.write('<TR><TD style="padding-top: 100px"> Version Detected: ' + cab_install + '</TD></TR>');
+		}else if(!detectIE()){
+			document.write('<TR><TD style="padding-top: 100px">This page is only valid for Internet Explorer</TD></TR>');
+		}else{
+			document.write('<TR><TD style="padding-top: 100px">Plugin Not Detected</TD></TR>');
+		}
+		document.write('</DIV>');
+		
+	</script>
+	</CENTER>
+</BODY>
+</HTML>

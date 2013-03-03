@@ -1,0 +1,183 @@
+package com.pyracube.sixdots;
+
+import java.io.IOException;
+
+import android.accounts.Account;
+import android.accounts.AccountManager;
+import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
+
+import com.google.android.gms.auth.GoogleAuthException;
+import com.google.android.gms.auth.GoogleAuthUtil;
+import com.google.android.gms.auth.GooglePlayServicesAvailabilityException;
+import com.google.android.gms.auth.UserRecoverableAuthException;
+
+/**
+ * Activity which displays a login screen to the user, offering registration as
+ * well.
+ */
+@SuppressLint("SetJavaScriptEnabled")
+public class GoogleLoginActivity extends BaseLoginActivity {
+
+	private static final int REQUEST_ACCOUNT_PICKER = 1;
+	private static final int REQUEST_AUTHORIZATION = 2;
+	private static final int CAPTURE_IMAGE = 3;
+	private static final String GOOGLE_API_URL = "https://accounts.google.com/o/oauth2/auth%s";
+
+	private WebView _webView;
+	private AlertDialog.Builder _builder;
+	private String _token;
+	private AccountManager _accountManager;
+	private ProgressDialog _progress;
+	public GoogleLoginActivity() {
+		super(R.layout.activity_login, R.id.webview);
+ 
+	}
+
+	@Override
+	protected void afterOnCreate() {
+		super.afterOnCreate();
+		showProgress();
+		getAndUseAuthTokenInAsyncTask(getAccountNames()[0]);
+
+	}
+	
+	private void showDialog(String title, String message) {
+		_builder = new AlertDialog.Builder(this);		
+		_builder.setTitle(title).setMessage(message)
+				.setNeutralButton("Close", null).show();
+	}
+	
+	private void showProgress() {
+		_progress = ProgressDialog.show(this, "dialog title",
+				"dialog message", true);
+
+		new Thread(new Runnable() {
+			@Override
+			public void run()
+			{
+				// do the thing that takes a long time
+
+				runOnUiThread(new Runnable() {
+					@Override
+					public void run()
+					{
+						_progress.dismiss();
+					}
+				});
+			}
+		}).start();
+	}
+
+	private String[] getAccountNames() {
+		_accountManager = AccountManager.get(this);
+		Account[] accounts = _accountManager
+				.getAccountsByType(GoogleAuthUtil.GOOGLE_ACCOUNT_TYPE);
+		String[] names = new String[accounts.length];
+		for (int i = 0; i < names.length; i++) {
+			names[i] = accounts[i].name;
+		}
+		return names;
+	}
+
+	private void getAndUseAuthTokenInAsyncTask(String email) {
+		AsyncTask<String, Void, String> task = new AsyncTask<String, Void, String>() {
+			@Override
+			protected String doInBackground(String... params) {
+				// TODO Auto-generated method stub
+				_token = getAccessToken(params[0].toString());
+				return _token;
+			}
+
+			@Override
+			protected void onPostExecute(String token) {
+				_builder.setTitle("Cookies").setMessage(token)
+						.setNeutralButton("Close", null).show();
+			}
+		};
+
+		task.execute(email);
+	}
+
+	private String getAccessToken(String email) {
+		String token = null;
+		String message = null;
+		try {
+			token = GoogleAuthUtil.getToken(this, email,
+					"oauth2:https://www.googleapis.com/auth/userinfo.email");
+		} catch (GooglePlayServicesAvailabilityException playEx) {
+			message = playEx.getMessage();
+		} catch (UserRecoverableAuthException e) {
+			startActivityForResult(e.getIntent(), REQUEST_AUTHORIZATION);
+		} catch (GoogleAuthException authEx) {
+			// This is likely unrecoverable.
+			message = authEx.getMessage();
+		} catch (IOException ioEx) {
+			// doExponentialBackoff();
+			message = ioEx.getMessage();
+		}
+		
+		return token;
+	}
+
+	private String getUrlByStatus(String detail) {
+		return String.format(GOOGLE_API_URL, detail);
+	}
+
+	private void setupWebView() {
+		_webView = (WebView) findViewById(R.id.webview);
+		WebSettings websettings = _webView.getSettings();
+		websettings.setJavaScriptEnabled(true);
+	}
+
+	private void executeUrl(String url) {
+		_webView.loadUrl(url);
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		super.onCreateOptionsMenu(menu);
+		getMenuInflater().inflate(R.menu.activity_login, menu);
+		return true;
+	}
+
+	/**
+	 * Attempts to sign in or register the account specified by the login form.
+	 * If there are form errors (invalid email, missing fields, etc.), the
+	 * errors are presented and no actual login attempt is made.
+	 */
+	public Dialog onCreateDialog(Bundle savedInstanceState) {
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		// Get the layout inflater
+		LayoutInflater inflater = this.getLayoutInflater();
+
+		// Inflate and set the layout for the dialog
+		// Pass null as the parent view because its going in the dialog layout
+		builder.setView(inflater.inflate(R.layout.dialog_message, null))
+				// Add action buttons
+				.setPositiveButton(R.string.OK,
+						new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog, int id) {
+								// sign in the user ...
+							}
+						})
+				.setNegativeButton(R.string.OK,
+						new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog, int id) {
+
+							}
+						});
+		return builder.create();
+	}
+}

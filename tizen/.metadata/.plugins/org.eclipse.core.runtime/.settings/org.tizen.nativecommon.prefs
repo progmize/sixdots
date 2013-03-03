@@ -1,0 +1,7 @@
+eclipse.preferences.version=1
+org.tizen.nativeplatform.git.base.uri=review.tizen.org
+org.tizen.nativeplatform.git.list.location=https\://review.tizen.org/git/
+org.tizen.nativeplatform.git.list.type=GITWEB
+org.tizen.nativeplatform.site.config.name=Tizen-Public
+org.tizen.nativeplatform.site.use.proxy=NO
+rg.tizen.nativeplatform.site.use.proxy.url=EMPTY
