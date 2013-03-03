@@ -21,6 +21,7 @@ public abstract class BaseLoginActivity extends Activity {
 	public BaseLoginActivity(int layoutResId, int webViewId) {
 		_layoutResId = layoutResId;
 		_webViewId = webViewId;
+		//Test
 	}
 
 	@Override
